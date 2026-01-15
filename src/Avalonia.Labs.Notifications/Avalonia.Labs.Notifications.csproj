@@ -11,6 +11,13 @@
     <DefineConstants Condition="'$(TargetFramework)' == 'net8.0'">$(DefineConstants);INCLUDE_WINDOWS;INCLUDE_LINUX</DefineConstants>
     <!-- ModuleInitializer in microcom codegen -->
     <NoWarn>$(NoWarn);CA2255</NoWarn>
+    <TargetFrameworks>net10.0;net10.0-android;net10.0-ios</TargetFrameworks>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net10.0-ios'">13.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="'$(TargetFramework)' == 'net10.0-android'">21.0</SupportedOSPlatformVersion>
+    <Nullable>annotations</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPackable>true</IsPackable>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net10.0'">$(DefineConstants);INCLUDE_WINDOWS;INCLUDE_LINUX</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +34,11 @@
     <PackageReference Include="Tmds.DBus.SourceGenerator" PrivateAssets="all" />
     <PackageReference Include="MicroCom.CodeGenerator.Roslyn" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Windows.CsWin32">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.20.0" />
+    <PackageReference Include="Tmds.DBus.SourceGenerator" Version="0.0.19" PrivateAssets="all" />
+    <PackageReference Include="MicroCom.CodeGenerator.Roslyn " Version="0.11.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -35,6 +47,8 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android' ">
     <PackageReference Include="Avalonia.Android" />
     <PackageReference Include="Xamarin.AndroidX.AppCompat" />
+    <PackageReference Include="Avalonia.Android" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.1" />
   </ItemGroup>
 
 </Project>

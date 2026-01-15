@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup Condition="'$(Nullable)' == ''">
     <Nullable>enable</Nullable>
-    <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
+    <WarningsAsErrors Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">$(WarningsAsErrors);nullable</WarningsAsErrors>
+    <NoWarn Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">$(NoWarn);nullable</NoWarn>
   </PropertyGroup>
 </Project>
