@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Foundation;
 using Avalonia.iOS;
 using Avalonia.Labs.Notifications;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Avalonia.Labs.Catalog.iOS;
 

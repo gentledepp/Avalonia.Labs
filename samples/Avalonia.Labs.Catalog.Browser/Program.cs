@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 using Avalonia.Labs.Catalog;
 
 [assembly: SupportedOSPlatform("browser")]

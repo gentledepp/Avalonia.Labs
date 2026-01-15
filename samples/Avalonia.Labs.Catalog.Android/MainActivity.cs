@@ -6,7 +6,7 @@ using Android.Content.PM;
 using Avalonia.Android;
 using Avalonia.Labs.Notifications;
 using Avalonia.Labs.Notifications.Android;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 using NotificationChannel = Avalonia.Labs.Notifications.NotificationChannel;
 
 namespace Avalonia.Labs.Catalog.Android;

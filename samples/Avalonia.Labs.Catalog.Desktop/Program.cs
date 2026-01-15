@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using Avalonia.Labs.Controls.Cache;
 using Avalonia.Labs.Notifications;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Avalonia.Labs.Catalog.Desktop;
 
