@@ -50,8 +50,8 @@ namespace Avalonia.Labs.Controls
         /// <summary>
         /// Defines the <see cref="HeaderDisplayMemberBinding" /> property
         /// </summary>
-        public static readonly StyledProperty<IBinding?> HeaderDisplayMemberBindingProperty =
-            AvaloniaProperty.Register<ItemsControl, IBinding?>(nameof(HeaderDisplayMemberBinding));
+        public static readonly StyledProperty<BindingBase?> HeaderDisplayMemberBindingProperty =
+            AvaloniaProperty.Register<ItemsControl, BindingBase?>(nameof(HeaderDisplayMemberBinding));
 
         /// <summary>
         /// The default value for the <see cref="HeaderPanel"/> property.
@@ -133,7 +133,7 @@ namespace Avalonia.Labs.Controls
         /// Gets or sets the <see cref="IBinding"/> to use for binding to the header member of each item.
         /// </summary>
         [AssignBinding]
-        public IBinding? HeaderDisplayMemberBinding
+        public BindingBase? HeaderDisplayMemberBinding
         {
             get { return GetValue(HeaderDisplayMemberBindingProperty); }
             set { SetValue(HeaderDisplayMemberBindingProperty, value); }
