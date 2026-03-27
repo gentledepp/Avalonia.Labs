@@ -1,9 +1,11 @@
-﻿#if ANDROID
+#if ANDROID
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
+using AndroidX.Core.Content;
 using Avalonia.Android;
 
 namespace Avalonia.Labs.Notifications.Android;
@@ -14,21 +16,27 @@ internal static class PlatformSupport
 
     public static int GetNextRequestCode() => s_lastRequestCode++;
 
-    public static async Task<bool> CheckPermission(this Activity activity, string permission)
+    public static async Task<bool> CheckPermission(this Context context, string permission)
     {
-        if (activity is not IActivityResultHandler mainActivity)
-        {
-            throw new InvalidOperationException("Main activity must implement IActivityResultHandler interface.");
-        }
-
         if (!OperatingSystem.IsAndroidVersionAtLeast(23))
         {
             return true;
         }
 
-        if (activity.CheckSelfPermission(permission) == Permission.Granted)
+        if (ContextCompat.CheckSelfPermission(context, permission) == Permission.Granted)
         {
             return true;
+        }
+
+        // RequestPermissions requires an Activity. Try to find one.
+        if (context is not Activity activity)
+        {
+            activity = NativeNotificationManager.CurrentActivity;
+        }
+
+        if (activity is null || activity is not IActivityResultHandler mainActivity)
+        {
+            return false;
         }
 
         var currentRequestCode = GetNextRequestCode();

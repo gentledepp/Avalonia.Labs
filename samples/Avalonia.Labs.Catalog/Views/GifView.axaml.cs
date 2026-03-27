@@ -25,7 +25,7 @@ namespace Avalonia.Labs.Catalog.Views
         {
             e.DragEffects &= DragDropEffects.Copy | DragDropEffects.Link;
 
-            if (!e.Data.Contains(DataFormats.FileNames))
+            if (!e.DataTransfer.Contains(DataFormat.File))
             {
                 e.DragEffects = DragDropEffects.None;
             }
@@ -33,7 +33,7 @@ namespace Avalonia.Labs.Catalog.Views
 
         private void Drop(object? sender, DragEventArgs e)
         {
-            if (!e.Data.Contains(DataFormats.FileNames))
+            if (!e.DataTransfer.Contains(DataFormat.File))
             {
                 return;
             }
@@ -43,7 +43,7 @@ namespace Avalonia.Labs.Catalog.Views
                 return;
             }
 
-            var paths = e.Data.GetFileNames()?.ToList();
+            var paths = e.DataTransfer.TryGetFiles()?.Select(f => f.Path.LocalPath).ToList();
             if (paths is null)
             {
                 return;

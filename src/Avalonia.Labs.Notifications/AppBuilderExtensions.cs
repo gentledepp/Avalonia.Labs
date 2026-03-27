@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Avalonia.Labs.Notifications.Apple;
 using Avalonia.Threading;
 
@@ -8,14 +8,14 @@ namespace Avalonia.Labs.Notifications
     {
         public static AppBuilder WithAppNotifications(this AppBuilder appBuilder
 #if ANDROID
-            , global::Android.App.Activity activity
+            , global::Android.Content.Context context
 #endif
             , AppNotificationOptions? options = null
             )
         {
             INativeNotificationManagerImpl notificationManager;
 #if ANDROID
-            notificationManager = new Android.NativeNotificationManager(activity);
+            notificationManager = new Android.NativeNotificationManager(context);
 #else
             if (OperatingSystem.IsMacOS() || OperatingSystem.IsIOS())
             {
@@ -66,5 +66,16 @@ namespace Avalonia.Labs.Notifications
                 };
             });
         }
+
+#if ANDROID
+        /// <summary>
+        /// Registers the current Activity for notification permission requests and intent handling.
+        /// Call this from your MainActivity's OnCreate.
+        /// </summary>
+        public static void SetNotificationActivity(global::Android.App.Activity activity)
+        {
+            Android.NativeNotificationManager.SetActivity(activity);
+        }
+#endif
     }
 }

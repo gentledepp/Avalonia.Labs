@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.OS;
+using Android.Runtime;
 using Avalonia.Android;
 using Avalonia.Labs.Notifications;
-using Avalonia.Labs.Notifications.Android;
 using ReactiveUI.Avalonia;
+using AppBuilderExtensions = Avalonia.Labs.Notifications.AppBuilderExtensions;
 using NotificationChannel = Avalonia.Labs.Notifications.NotificationChannel;
 
 namespace Avalonia.Labs.Catalog.Android;
@@ -17,10 +19,31 @@ namespace Avalonia.Labs.Catalog.Android;
     Icon = "@drawable/icon",
     MainLauncher = true,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
-public class MainActivity : AvaloniaMainActivity<App>
+public class MainActivity : AvaloniaMainActivity
 {
-    public event EventHandler<Intent> OnActivityIntent;
+    public event EventHandler<Intent>? OnActivityIntent;
 
+    protected override void OnCreate(Bundle? savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+        AppBuilderExtensions.SetNotificationActivity(this);
+    }
+
+    protected override void OnNewIntent(Intent intent)
+    {
+        base.OnNewIntent(intent);
+
+        OnActivityIntent?.Invoke(this, intent);
+    }
+}
+
+[Application]
+public class AndroidApp : AvaloniaAndroidApplication<App>
+{
+    protected AndroidApp(IntPtr javaReference, JniHandleOwnership transfer)
+        : base(javaReference, transfer)
+    {
+    }
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
         return base.CustomizeAppBuilder(builder)
@@ -48,12 +71,5 @@ public class MainActivity : AvaloniaMainActivity<App>
                 }
             })
             .UseReactiveUI();
-    }
-
-    protected override void OnNewIntent(Intent intent)
-    {
-        base.OnNewIntent(intent);
-
-        OnActivityIntent?.Invoke(this, intent);
     }
 }

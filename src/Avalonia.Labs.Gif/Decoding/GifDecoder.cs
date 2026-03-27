@@ -95,7 +95,7 @@ internal sealed class GifDecoder : IDisposable
         _suffixBuf = new byte[MaxStackSize];
         _pixelStack = new byte[MaxStackSize + 1];
 
-        _backBufferBytes = pixelCount * Marshal.SizeOf(typeof(GifColor));
+        _backBufferBytes = pixelCount * Marshal.SizeOf<GifColor>();
     }
 
     public void Dispose()

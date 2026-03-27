@@ -149,7 +149,7 @@ public class InfoBadge : ContentControl
         if (sender is Visual visual)
         {
             visual.DetachedFromVisualTree -= Parent_DetachedFromVisualTreeHandler;
-            if (AdornerLayer.GetAdornerLayer(e.Parent) is { } layer)
+            if (e.Parent is Visual parent && AdornerLayer.GetAdornerLayer(parent) is { } layer)
             {
                 var badges = layer.Children.OfType<InfoBadge>().ToArray();
                 foreach (var badge in badges)

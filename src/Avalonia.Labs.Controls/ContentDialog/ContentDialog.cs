@@ -359,7 +359,7 @@ public partial class ContentDialog : ContentControl, ICustomKeyboardNavigation
                 inputElement = null;
             }
 
-            inputElement ??= KeyboardNavigationHandler.GetNext(this, NavigationDirection.Next) ?? this;
+            inputElement ??= (TopLevel.GetTopLevel(this)?.FocusManager as FocusManager)?.FindNextElement(NavigationDirection.Next) as InputElement ?? this;
 
             if (!this.IsLoaded)
             {

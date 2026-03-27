@@ -1,4 +1,4 @@
-﻿#if ANDROID
+#if ANDROID
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,8 +13,14 @@ namespace Avalonia.Labs.Notifications.Android
     internal class NativeNotificationManager : INativeNotificationManagerImpl, IDisposable
     {
         private readonly Dictionary<uint, INativeNotification> _notifications = new Dictionary<uint, INativeNotification>();
-        private Activity _activity;
+        private readonly Context _context;
         private bool _isActive;
+
+        /// <summary>
+        /// Set this to the current Activity so that permission requests can be made.
+        /// Call <see cref="SetActivity"/> from your MainActivity's OnCreate.
+        /// </summary>
+        internal static Activity? CurrentActivity { get; private set; }
 
         public IReadOnlyDictionary<uint, INativeNotification> ActiveNotifications => _notifications;
 
@@ -24,14 +30,26 @@ namespace Avalonia.Labs.Notifications.Android
 
         public event EventHandler<NativeNotificationCompletedEventArgs>? NotificationCompleted;
 
-        public NativeNotificationManager(Activity activity)
+        public NativeNotificationManager(Context context)
         {
-            _activity = activity;
+            _context = context;
 
-            ChannelManager = new AndroidNotificationChannelManager(activity);
+            ChannelManager = new AndroidNotificationChannelManager(context);
+        }
 
-            if(_activity is IActivityIntentResultHandler handler)
-                handler.OnActivityIntent += Activity_OnActivityIntent;
+        /// <summary>
+        /// Registers the current Activity for permission requests and intent handling.
+        /// Call this from your MainActivity's OnCreate or OnResume.
+        /// </summary>
+        public static void SetActivity(Activity activity)
+        {
+            CurrentActivity = activity;
+
+            if (Notifications.NativeNotificationManager.Current is NativeNotificationManager manager
+                && activity is IActivityIntentResultHandler handler)
+            {
+                handler.OnActivityIntent += manager.Activity_OnActivityIntent;
+            }
         }
 
         private void Activity_OnActivityIntent(object? sender, Intent e)
@@ -49,14 +67,14 @@ namespace Avalonia.Labs.Notifications.Android
                 notification.Value?.Close();
             }
 
-            NotificationManagerCompat.From(_activity).CancelAll();
+            NotificationManagerCompat.From(_context).CancelAll();
 
             _notifications.Clear();
         }
 
         public INativeNotification? CreateNotification(string? category)
         {
-            if (!_isActive || _activity == null)
+            if (!_isActive || _context == null)
                 return null;
 
             var channel = ChannelManager?.GetChannel(category ?? AndroidNotificationChannelManager.DefaultChannel) ??
@@ -67,7 +85,7 @@ namespace Avalonia.Labs.Notifications.Android
                 return null;
             }
 
-            return new NativeNotification(_activity, this, channel);
+            return new NativeNotification(_context, this, channel);
         }
 
         public async void Initialize(AppNotificationOptions? options)
@@ -78,20 +96,20 @@ namespace Avalonia.Labs.Notifications.Android
 
         private async Task<bool> CheckPermission()
         {
-            if (_activity == null)
+            if (_context == null)
                 return false;
 
             if (Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu)
                 return true;
 
-            return await PlatformSupport.CheckPermission(_activity, Manifest.Permission.PostNotifications);
+            return await PlatformSupport.CheckPermission(_context, Manifest.Permission.PostNotifications);
         }
 
         internal async void Show(NativeNotification nativeNotification)
         {
-            if (_activity != null && nativeNotification.CurrentNotification != null && await CheckPermission())
+            if (_context != null && nativeNotification.CurrentNotification != null && await CheckPermission())
             {
-                NotificationManagerCompat.From(_activity).Notify((int)nativeNotification.Id, nativeNotification.CurrentNotification);
+                NotificationManagerCompat.From(_context).Notify((int)nativeNotification.Id, nativeNotification.CurrentNotification);
 
                 _notifications[nativeNotification.Id] = nativeNotification;
             }
@@ -122,7 +140,7 @@ namespace Avalonia.Labs.Notifications.Android
 
         internal void Close(NativeNotification nativeNotification)
         {
-            NotificationManagerCompat.From(_activity).Cancel((int)nativeNotification.Id);
+            NotificationManagerCompat.From(_context).Cancel((int)nativeNotification.Id);
             _notifications.Remove(nativeNotification.Id);
         }
 

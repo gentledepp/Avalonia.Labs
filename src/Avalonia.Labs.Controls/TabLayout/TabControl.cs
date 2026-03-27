@@ -226,14 +226,14 @@ namespace Avalonia.Labs.Controls
             BorderPart = e.NameScope.Find<Border>("PART_Border");
             if (ScrollViewerPart != null)
             {
-                ScrollViewerPart.RemoveHandler(Gestures.ScrollGestureEndedEvent, ScrollEndedEventHandler);
+                ScrollViewerPart.RemoveHandler(InputElement.ScrollGestureEndedEvent, ScrollEndedEventHandler);
             }
 
             ScrollViewerPart = e.NameScope.Find<FlipViewScrollViewer>("PART_ScrollViewer");
 
             if (ScrollViewerPart != null)
             {
-                ScrollViewerPart.AddHandler(Gestures.ScrollGestureEndedEvent, ScrollEndedEventHandler, handledEventsToo: true);
+                ScrollViewerPart.AddHandler(InputElement.ScrollGestureEndedEvent, ScrollEndedEventHandler, handledEventsToo: true);
             }
         }
 
@@ -269,7 +269,7 @@ namespace Avalonia.Labs.Controls
         }
 
         /// <inheritdoc/>
-        protected override void OnGotFocus(GotFocusEventArgs e)
+        protected override void OnGotFocus(FocusChangedEventArgs e)
         {
             base.OnGotFocus(e);
 

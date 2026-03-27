@@ -88,7 +88,7 @@ public class StepBarItem : ContentControl, ISelectable
         if (e.Handled)
             return;
 
-        if (!e.Handled && ItemsControl.ItemsControlFromItemContaner(this) is StepBar owner)
+        if (!e.Handled && ItemsControl.ItemsControlFromItemContainer(this) is StepBar owner)
         {
             var p = e.GetCurrentPoint(this);
 
@@ -124,14 +124,13 @@ public class StepBarItem : ContentControl, ISelectable
             e.InitialPressMouseButton is MouseButton.Left or MouseButton.Right)
         {
             var point = e.GetCurrentPoint(this);
-            var settings = TopLevel.GetTopLevel(e.Source as Visual)?.PlatformSettings;
-            var tapSize = settings?.GetTapSize(point.Pointer.Type) ?? new Size(4, 4);
+            var tapSize = new Size(4, 4);
             var tapRect = new Rect(_pointerDownPoint, new Size())
                 .Inflate(new Thickness(tapSize.Width, tapSize.Height));
 
             if (new Rect(Bounds.Size).ContainsExclusive(point.Position) &&
                 tapRect.ContainsExclusive(point.Position) &&
-                ItemsControl.ItemsControlFromItemContaner(this) is StepBar owner)
+                ItemsControl.ItemsControlFromItemContainer(this) is StepBar owner)
             {
                 if (owner.UpdateSelectionFromPointerEvent(this, e))
                     e.Handled = true;

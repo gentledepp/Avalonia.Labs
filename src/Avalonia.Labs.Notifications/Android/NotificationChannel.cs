@@ -1,4 +1,4 @@
-﻿#if ANDROID
+#if ANDROID
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +12,16 @@ namespace Avalonia.Labs.Notifications.Android
     {
         public const string DefaultChannel = "default";
         public const string DefaultChannelLabel = "Notifications";
-        private readonly Activity _activity;
+        private readonly global::Android.Content.Context _context;
 
         private readonly Dictionary<string, NotificationChannel> _channels = new Dictionary<string, NotificationChannel>();
 
         internal static bool SupportsChannels => Build.VERSION.SdkInt >= BuildVersionCodes.O;
 
 
-        public AndroidNotificationChannelManager(Activity activity)
+        public AndroidNotificationChannelManager(global::Android.Content.Context context)
         {
-            _activity = activity;
+            _context = context;
         }
 
         public override NotificationChannel AddChannel(NotificationChannel notificationChannel)
@@ -38,7 +38,7 @@ namespace Avalonia.Labs.Notifications.Android
                     NotificationPriority.Max => NotificationImportance.Max,
                     _ => throw new NotImplementedException(),
                 }));
-                NotificationManagerCompat.From(_activity).CreateNotificationChannel(builder.Build());
+                NotificationManagerCompat.From(_context).CreateNotificationChannel(builder.Build());
             }
 
             _channels[notificationChannel.Id] = notificationChannel;
@@ -50,7 +50,7 @@ namespace Avalonia.Labs.Notifications.Android
         {
             if (!SupportsChannels)
                 return Array.Empty<string>();
-            var manager = NotificationManagerCompat.From(_activity);
+            var manager = NotificationManagerCompat.From(_context);
             var channels = manager.NotificationChannels;
 
             return channels.Select(c => c.Id ?? "").ToArray();
@@ -65,7 +65,7 @@ namespace Avalonia.Labs.Notifications.Android
 
             if (SupportsChannels && GetAppChannels().Contains(channel))
             {
-                NotificationManagerCompat.From(_activity).DeleteNotificationChannel(channel);
+                NotificationManagerCompat.From(_context).DeleteNotificationChannel(channel);
             }
         }
 

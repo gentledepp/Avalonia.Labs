@@ -81,6 +81,12 @@ namespace Avalonia.Labs.Controls
         /// <inheritdoc/>
         public Control? CurrentAnchor => (Presenter as IScrollAnchorProvider)?.CurrentAnchor;
 
+        /// <inheritdoc/>
+        public bool CanHorizontallyScroll { get; set; } = true;
+
+        /// <inheritdoc/>
+        public bool CanVerticallyScroll { get; set; } = true;
+
         static FlipViewScrollViewer()
         {
             EnableTransitionProperty.Changed.AddClassHandler<FlipViewScrollViewer>((x, e) => x.AttachAnimations());
@@ -405,8 +411,8 @@ namespace Avalonia.Labs.Controls
             presenter.SetCurrentValue(ScrollContentPresenter.CanHorizontallyScrollProperty, true);
             presenter.SetCurrentValue(ScrollContentPresenter.CanVerticallyScrollProperty, true);
 
-            presenter.AddHandler(Gestures.ScrollGestureEvent, OnScrollGesture);
-            presenter.AddHandler(Gestures.ScrollGestureEndedEvent, OnScrollGestureEnded);
+            presenter.AddHandler(InputElement.ScrollGestureEvent, OnScrollGesture);
+            presenter.AddHandler(InputElement.ScrollGestureEndedEvent, OnScrollGestureEnded);
 
             IDisposable? IfUnset<T>(T property, Func<T, IDisposable> func) where T : AvaloniaProperty => presenter.IsSet(property) ? null : func(property);
         }
