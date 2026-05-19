@@ -197,8 +197,6 @@ namespace Avalonia.Labs.Controls
             if (await ImageCache.Instance.IsUriCachedAsync(scaledUri))
                 return (await ProvideCachedResourceAsync(scaledUri, token))!;
 
-
-#if NET6_0_OR_GREATER
             using var client = new HttpClient();
             var stream = await client.GetStreamAsync(url, token).ConfigureAwait(false);
 

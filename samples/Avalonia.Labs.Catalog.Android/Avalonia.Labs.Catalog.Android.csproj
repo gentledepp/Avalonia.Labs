@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Android" VersionOverride="$(AvaloniaSampleVersion)" />
-    <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
   </ItemGroup>
 
   <ItemGroup>
