@@ -41,13 +41,10 @@
                       CornerRadius="{TemplateBinding CornerRadius}">
                 <Grid Name="DialogSpace" ClipToBounds="True"
                   RowDefinitions="*,Auto">
-                  <ScrollViewer Name="ContentScrollViewer"
-                                HorizontalScrollBarVisibility="Disabled"
-                                VerticalScrollBarVisibility="Auto">
-                    <Border Background="{DynamicResource ContentDialogTopOverlay}"
-                            Padding="{DynamicResource ContentDialogPadding}"
-                            BorderThickness="{StaticResource ContentDialogSeparatorThickness}"
-                            BorderBrush="{DynamicResource ContentDialogSeparatorBorderBrush}">
+                  <Border Background="{DynamicResource ContentDialogTopOverlay}"
+                          Padding="{DynamicResource ContentDialogPadding}"
+                          BorderThickness="{StaticResource ContentDialogSeparatorThickness}"
+                          BorderBrush="{DynamicResource ContentDialogSeparatorBorderBrush}">
                       <Grid RowDefinitions="Auto,*" >
                         <Grid.Styles>
                           <!--Make sure text wrapping is on-->
@@ -75,7 +72,6 @@
                                           Grid.Row="1"/>
                       </Grid>
                     </Border>
-                  </ScrollViewer>
 
                   <Border Padding="{StaticResource ContentDialogPadding}"
                           Grid.Row="1"
