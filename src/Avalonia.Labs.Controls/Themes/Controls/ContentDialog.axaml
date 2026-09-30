@@ -26,6 +26,7 @@
                     BorderThickness="{StaticResource ContentDialogBorderWidth}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     CornerRadius="{TemplateBinding CornerRadius}"
+                    Margin="{TemplateBinding DialogInsets}"
                     MinWidth="{DynamicResource ContentDialogMinWidth}"
                     MaxWidth="{DynamicResource ContentDialogMaxWidth}"
                     MinHeight="{DynamicResource ContentDialogMinHeight}"

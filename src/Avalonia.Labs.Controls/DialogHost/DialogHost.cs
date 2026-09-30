@@ -90,13 +90,49 @@ public class DialogHost : ContentControl
 
     private void OnSafeAreaChanged(object? sender, SafeAreaChangedArgs e) => UpdateDialogInsets();
 
+    /// <summary>
+    /// Hands the dialog the area it should keep its card clear of: the safe area, and whatever the
+    /// on-screen keyboard actually covers.
+    /// </summary>
+    /// <remarks>
+    /// The insets go to the dialog's card and nowhere else. This host carries the dialog, and the
+    /// dialog paints its scrim inside its own template, so padding either of them dims a band of
+    /// the screen with the card centred in the band rather than covering the viewport.
+    /// </remarks>
     private void UpdateDialogInsets()
     {
+        if (Content is not ContentDialog dialog)
+            return;
+
         var safe = _insetsManager?.SafeAreaPadding ?? default;
-        var occludedHeight = _inputPane?.OccludedRect.Height ?? 0;
-        var bottom = safe.Bottom + (occludedHeight > 0 ? occludedHeight + KeyboardGap : 0);
-        Padding = new Thickness(safe.Left, safe.Top, safe.Right, bottom);
-        InvalidateMeasure();
+        var covered = CoveredHeight();
+
+        dialog.SetCurrentValue(
+            ContentDialog.DialogInsetsProperty,
+            new Thickness(safe.Left, safe.Top, safe.Right, covered > 0 ? covered + KeyboardGap : safe.Bottom));
+    }
+
+    /// <summary>
+    /// How much of the viewport the on-screen keyboard actually covers.
+    /// </summary>
+    /// <remarks>
+    /// Not <c>OccludedRect.Height</c>: the rect is also published when the keyboard is dismissed -
+    /// on iOS as its off-screen frame, which still has a full height - so the height on its own
+    /// says nothing about whether anything is covered, and a dismissed keyboard would keep the
+    /// dialog permanently inset. Intersecting the rect with the client area answers the question
+    /// that is actually being asked, and it also copes with a pane that only partly overlaps and
+    /// with a platform that reports the rect in an unexpected coordinate space.
+    /// </remarks>
+    private double CoveredHeight()
+    {
+        if (_inputPane is not { State: InputPaneState.Open } pane)
+            return 0;
+
+        if (TopLevel.GetTopLevel(this) is not { } topLevel)
+            return 0;
+
+        var rect = pane.OccludedRect;
+        return Math.Max(0, Math.Min(rect.Bottom, topLevel.ClientSize.Height) - Math.Max(rect.Top, 0));
     }
 
     protected override void OnPointerEntered(PointerEventArgs e)

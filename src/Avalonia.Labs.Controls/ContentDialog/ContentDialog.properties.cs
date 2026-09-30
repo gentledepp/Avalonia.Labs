@@ -33,6 +33,12 @@ public partial class ContentDialog
         AvaloniaProperty.Register<ContentDialog, string?>(nameof(CloseButtonText));
 
     /// <summary>
+    /// Defines the <see cref="DialogInsets"/> property
+    /// </summary>
+    public static readonly StyledProperty<Thickness> DialogInsetsProperty =
+        AvaloniaProperty.Register<ContentDialog, Thickness>(nameof(DialogInsets));
+
+    /// <summary>
     /// Defines the <see cref="DefaultButton"/> property
     /// </summary>
     public static readonly StyledProperty<ContentDialogButton> DefaultButtonProperty =
@@ -359,6 +365,22 @@ public partial class ContentDialog
     /// Occurs after the dialog is closed.
     /// </summary>
     public event EventHandler<ContentDialogClosedEventArgs>? Closed;
+
+    /// <summary>
+    /// Gets or sets the area along the edges of the viewport that the dialog's card keeps clear -
+    /// the safe area, and whatever the on-screen keyboard covers. Set by <see cref="DialogHost"/>.
+    /// </summary>
+    /// <remarks>
+    /// This deliberately insets the card alone. A dialog paints its scrim inside its own template,
+    /// so insetting the dialog - or the host that carries it - would leave the scrim covering a
+    /// band of the screen with the card centred inside that band instead of over the whole
+    /// viewport.
+    /// </remarks>
+    public Thickness DialogInsets
+    {
+        get => GetValue(DialogInsetsProperty);
+        set => SetValue(DialogInsetsProperty, value);
+    }
 
     /// <summary>
     /// Occurs after the primary button has been tapped.
